@@ -1,0 +1,23 @@
+
+.buttonContainer{
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    width: 100%;
+}
+.MainContainer{
+    display: flex;
+    padding: 20px 10px;
+}
+.Wrapper{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 150px;
+}
+.heading{
+    color:red;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}

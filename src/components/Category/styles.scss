@@ -1,0 +1,13 @@
+.CategoryContainer{
+    display: grid;
+    grid-template-columns: repeat(2,1fr) ;
+
+}
+.headingCategory{
+    color: #3F51B5
+}
+.MainContainer{
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
