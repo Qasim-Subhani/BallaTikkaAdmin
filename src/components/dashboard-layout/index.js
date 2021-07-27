@@ -16,13 +16,12 @@ import MenuIcon from "@material-ui/icons/Menu";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import { AiOutlinePlus } from "react-icons/ai";
+import { AiOutlinePlus, AiOutlineLogout } from "react-icons/ai";
 import { GrDatabase } from "react-icons/gr";
-import { Card } from "../card";
 import "./styles.scss";
 import { Category } from "../Category";
 import { AddProducts } from "../add-products";
-import { useLocation } from "react-router-dom";
+import { Redirect, withRouter } from "react-router-dom";
 
 const drawerWidth = 220;
 
@@ -71,6 +70,7 @@ function ResponsiveDrawer(props) {
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [fdata, setfdata] = useState([]);
+
   useEffect(() => {
     const db = firebase.firestore();
     db.collection("Products")
@@ -83,33 +83,46 @@ function ResponsiveDrawer(props) {
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-  const param = useLocation();
-  console.log("Products Data is", param.state.products);
-  let products = param.state.products;
   const drawer = (
     <div>
       <div className={classes.toolbar} />
       <List>
-        {["Dashboard", "Add Products", "View Products"].map((text, index) => (
-          <div onClick={() => setscreenName(index)}>
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index === 0 ? (
-                  <Home />
-                ) : (
-                  [
-                    index === 1 ? (
-                      <AiOutlinePlus style={{ fontSize: 25 }} />
-                    ) : (
-                      <GrDatabase style={{ fontSize: 25 }} />
-                    ),
-                  ]
-                )}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          </div>
-        ))}
+        {["Dashboard", "Add Products", "View Products", "Logout"].map(
+          (text, index) => (
+            <div
+              onClick={() => {
+                if (index === 3) {
+                  console.log("SigOut");
+                  firebase.auth().signOut();
+                  props.history.push("/");
+                } else setscreenName(index);
+              }}
+            >
+              <ListItem button key={text}>
+                <ListItemIcon>
+                  {index === 0 ? (
+                    <Home />
+                  ) : (
+                    [
+                      index === 1 ? (
+                        <AiOutlinePlus style={{ fontSize: 25 }} />
+                      ) : (
+                        [
+                          index === 3 ? (
+                            <AiOutlineLogout style={{ fontSize: 25 }} />
+                          ) : (
+                            <GrDatabase style={{ fontSize: 25 }} />
+                          ),
+                        ]
+                      ),
+                    ]
+                  )}
+                </ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItem>
+            </div>
+          )
+        )}
       </List>
     </div>
   );
@@ -193,4 +206,4 @@ ResponsiveDrawer.propTypes = {
   window: PropTypes.func,
 };
 
-export default ResponsiveDrawer;
+export default withRouter(ResponsiveDrawer);

@@ -2,18 +2,23 @@ import React, { useState, useEffect, useContext } from "react";
 import "./style.scss";
 import { Alert } from "@material-ui/lab";
 import firebase from "firebase";
-import { Link } from "react-router-dom";
 import { ApplicationContext } from "../../utils/context-api";
+import auth from "../../auth";
+import { Redirect, withRouter } from "react-router-dom";
 
-export const RegistrationForm = (props) => {
+const RegistrationForm = ({ history }) => {
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
   const [showAlert, setshowAlert] = useState(false);
   // const [isLogin, setisLogin] = useState(false);
   const { isLogin, setisLogin } = useContext(ApplicationContext);
 
+  useEffect(() => {
+    localStorage.setItem("auth", null);
+  }, []);
+
   const handleSubmitClick = (e) => {
-    // e.preventDefault();
+    e.preventDefault();
 
     if (email !== "" && password != "") {
       Login();
@@ -38,9 +43,11 @@ export const RegistrationForm = (props) => {
             const JsonValue = JSON.stringify(data.user);
             await localStorage.setItem("UserData", JsonValue);
             setisLogin(true);
+            history.push("/dashboard");
             //   props.navigation.navigate("Itemlist", [data.user, firedata]);
           } catch (error) {
             console.log(error);
+            setisLogin(false);
           }
         }
       })
@@ -53,11 +60,14 @@ export const RegistrationForm = (props) => {
           console.log("That email address is invalid!");
         }
 
-        console.error(error);
+        // console.error(error);
+        setisLogin(false);
         alert("Please Check your login Credentials");
       });
   };
-
+  if (isLogin) {
+    return <Redirect to="/" />;
+  }
   return (
     <>
       <div className="Wrapper">
@@ -91,14 +101,13 @@ export const RegistrationForm = (props) => {
                 />
               </div>
               <div className="buttonContainer">
-                <Link
+                <button
                   onClick={handleSubmitClick}
-                  to={{ pathname: "/dashboard" }}
+                  type="submit"
+                  className="btn btn-primary "
                 >
-                  <button type="submit" className="btn btn-primary ">
-                    Login
-                  </button>
-                </Link>
+                  Login
+                </button>
               </div>
             </form>
           </div>
@@ -112,3 +121,4 @@ export const RegistrationForm = (props) => {
     </>
   );
 };
+export default withRouter(RegistrationForm);
